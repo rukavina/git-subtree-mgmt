@@ -197,8 +197,8 @@ function action_help($options){
     echo "
 
 Example:
-php git-subtree-mgmt --command=tag --subtree=contact
-php git-subtree-mgmt --command=split --package=app --module-dir=App
+php git-subtree-mgmt.php --command=tag --subtree=contact
+php git-subtree-mgmt.php --command=split --package=app --module-dir=App
 
 Available parameters
 
