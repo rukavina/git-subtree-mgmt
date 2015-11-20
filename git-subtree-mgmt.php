@@ -47,8 +47,8 @@ function getSubtreeTmpDir($name){
     global $config;
     
     $dir = $config['subtree_dir'] . '/' . $name;
-    if(!is_dir($dir)){
-        mkdir($dir, 0755, true);
+    if(!is_dir(dirname($dir))){
+        mkdir(dirname($dir));
     }
     return $dir;
 }
