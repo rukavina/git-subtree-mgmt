@@ -179,7 +179,7 @@ function action_split($options)
     execCmd('git commit -am "Remove split code from module."', $projectFolder);
     
     execCmd("git remote add origin/modules-$package $gitDir/$package.git", $projectFolder);
-    execCmd("git subtree add --prefix=module/$moduleDir --squash origin/modules-$package master", $projectFolder);
+    execCmd("git subtree add --prefix=$moduleRelPath/$moduleDir --squash origin/modules-$package master", $projectFolder);
     
     //git branch -D rest
     execCmd("git branch -D $package", $projectFolder);
@@ -197,8 +197,8 @@ function action_help($options){
     echo "
 
 Example:
-php git-operations.php --command=tag --subtree=contact
-php git-operations.php --command=split --package=app --module-dir=App
+php git-subtree-mgmt --command=tag --subtree=contact
+php git-subtree-mgmt --command=split --package=app --module-dir=App
 
 Available parameters
 
