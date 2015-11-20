@@ -39,7 +39,7 @@ function pushSubtree($name){
     if(!checkSubtree($name)){
         return false;
     }
-    execCmd("git subtree push --prefix=" . $moduleRelPath . '/' . $subtrees[$name] . " " . $gitDir . ' /' . $subtrees[$name] . " master", $projectDir);
+    execCmd("git subtree push --prefix=" . $moduleRelPath . '/' . $subtrees[$name] . " " . $gitDir . '/' . $subtrees[$name] . " master", $projectDir);
     return true;
 }
 
