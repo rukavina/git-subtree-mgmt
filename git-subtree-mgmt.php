@@ -46,7 +46,17 @@ function pushSubtree($name){
 function getSubtreeTmpDir($name){
     global $config;
     
-    return $config['subtree_dir'] . '/' . $name;
+    $dir = $config['subtree_dir'] . '/' . $name;
+    if(!is_dir($dir)){
+        mkdir($dir, 0755, true);
+    }
+    return $dir;
+}
+
+function getSubtreeUrl($name){
+    global $config;
+    
+    return $config['git_dir'] . '/' . $name;
 }
 
 function execCmd($cmd, $inPath = null){
@@ -69,10 +79,10 @@ function updateSubtree($name){
     
     $subtreeDir = getSubtreeTmpDir($name);
     if(!is_dir($subtreeDir)){
-        execCmd("git clone " . $subtrees[$name]['url'], $subtreeDir . '/../');
+        execCmd("git clone " . getSubtreeUrl($name), $subtreeDir . '/../');
     }
     else{
-        execCmd("git pull " . $subtrees[$name]['url'], $subtreeDir);
+        execCmd("git pull " . getSubtreeUrl($name), $subtreeDir);
     }
 }
 
