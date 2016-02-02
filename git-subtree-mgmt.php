@@ -15,6 +15,26 @@ $options = getopt($shortopts, $longopts);
 $config = require './config.php';
 $subtrees = $config['subtrees'];
 
+function checkGitBranch(){
+    global $config;    
+    
+    $headFile = $config['project_dir'] . '/.git/HEAD';
+    if(!file_exists($headFile)){
+        writeError("Git HEAD file not found");
+        return false;        
+    }
+    
+    $headContent = file($headFile, FILE_USE_INCLUDE_PATH);
+    $firstLine = $headContent[0]; //get the string from the array
+    $explodedstring = explode("/", $firstLine, 3); //seperate out by the "/" in the string
+    $branchName = strtolower(trim($explodedstring[2]));
+    if($branchName != 'master'){
+        writeError("You can only publish from MASTER branch of host project");
+        return false;
+    }
+    return true;
+}
+
 function checkSubtree($name){
     global $subtrees;
     
@@ -35,6 +55,10 @@ function pushSubtree($name){
     $gitDir = $config['git_dir'];
     $moduleRelPath = $config['module_rel_path'];
     $projectDir = $config['project_dir'];
+    
+    if(!checkGitBranch()){
+        return false;
+    }
     
     if(!checkSubtree($name)){
         return false;
@@ -77,6 +101,10 @@ function updateSubtree($name){
         return false;
     }
     
+    if(!checkGitBranch()){
+        return false;
+    }    
+    
     $subtreeDir = getSubtreeTmpDir($name);
     if(!is_dir($subtreeDir)){
         execCmd("git clone " . getSubtreeUrl($name), $subtreeDir . '/../');
@@ -100,6 +128,10 @@ function tagSubtree($name, $tag){
     if(!checkSubtree($name)){
         return false;
     }
+    
+    if(!checkGitBranch()){
+        return false;
+    }    
     
     updateSubtree($name);
     $subtreeDir = getSubtreeTmpDir($name);    
