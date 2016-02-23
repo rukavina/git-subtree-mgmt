@@ -67,6 +67,20 @@ function pushSubtree($name){
     return true;
 }
 
+function squashSubtree($name){
+    global $subtrees, $config;
+    
+    $moduleRelPath = $config['module_rel_path'];
+    $gitDir = $config['git_dir'];
+    $projectDir = $config['project_dir'];
+    
+    if(!checkSubtree($name)){
+        return false;
+    }
+    execCmd("git subtree pull --prefix=" . $moduleRelPath . '/' . $subtrees[$name] . " " . $gitDir . '/' . $subtrees[$name] . " master --squash", $projectDir);
+    return true;
+}
+
 function getSubtreeTmpDir($name){
     global $config;
     
@@ -176,6 +190,18 @@ function action_push($options){
     
 }
 
+function action_squash($options){
+    global $subtrees;
+    if(isset($options['subtree'])){
+        squashSubtree($options['subtree']);
+        return;
+    }
+    foreach ($subtrees as $subtree => $value) {
+        squashSubtree($subtree);
+    }
+    
+}
+
 function action_pull($options){
     global $subtrees;
     if(!isset($options['subtree'])){
@@ -239,12 +265,14 @@ function action_help($options){
     echo "
 
 Example:
-php git-subtree-mgmt.php --command=tag --subtree=contact
-php git-subtree-mgmt.php --command=split --package=app --module-dir=App
+php git-subtree-mgmt.php --command=push    --subtree=contact
+php git-subtree-mgmt.php --command=tag     --subtree=contact
+php git-subtree-mgmt.php --command=squash  --subtree=contact
+php git-subtree-mgmt.php --command=split   --package=app --module-dir=App
 
 Available parameters
 
-    --command=tag|help|push|tagall|split
+    --command=tag|help|push|tagall|split|squash
     --subtree=subtree module like cms, auth, teaser ...
     --package=new package name
     --module-dir module dir in modules, case sensitive
